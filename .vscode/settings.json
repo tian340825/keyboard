@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "usb_device.h": "c",
+        "gpio.h": "c",
+        "stm32f1xx_hal.h": "c",
+        "keyboard.h": "c",
+        "main.h": "c",
+        "usart.h": "c",
+        "dma.h": "c",
+        "usbd_hid.h": "c",
+        "usbd_core.h": "c"
+    }
+}

@@ -1,0 +1,10 @@
+helloword-keyboard\usbd_custom_hid_if.o: ../USB_DEVICE/App/usbd_custom_hid_if.c
+helloword-keyboard\usbd_custom_hid_if.o: ../USB_DEVICE/App/usbd_custom_hid_if.h
+helloword-keyboard\usbd_custom_hid_if.o: ../Middlewares/ST/STM32_USB_Device_Library/Class/CustomHID/Inc/usbd_customhid.h
+helloword-keyboard\usbd_custom_hid_if.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
+helloword-keyboard\usbd_custom_hid_if.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h
+helloword-keyboard\usbd_custom_hid_if.o: ../USB_DEVICE/Target/usbd_conf.h
+helloword-keyboard\usbd_custom_hid_if.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+helloword-keyboard\usbd_custom_hid_if.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+helloword-keyboard\usbd_custom_hid_if.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+helloword-keyboard\usbd_custom_hid_if.o: ../Core/Inc/main.h

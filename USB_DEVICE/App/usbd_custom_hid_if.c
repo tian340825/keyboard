@@ -2,7 +2,7 @@
 /**
   ******************************************************************************
   * @file           : usbd_custom_hid_if.c
-  * @version        : v1.0_Cube
+  * @version        : v2.0_Cube
   * @brief          : USB Device Custom HID interface file.
   ******************************************************************************
   * @attention
@@ -176,15 +176,6 @@ static int8_t CUSTOM_HID_DeInit_FS(void)
 static int8_t CUSTOM_HID_OutEvent_FS(uint8_t event_idx, uint8_t state)
 {
   /* USER CODE BEGIN 6 */
-  UNUSED(event_idx);
-  UNUSED(state);
-
-  /* Start next USB packet transfer once data processing is completed */
-  if (USBD_CUSTOM_HID_ReceivePacket(&hUsbDeviceFS) != (uint8_t)USBD_OK)
-  {
-    return -1;
-  }
-
   return (USBD_OK);
   /* USER CODE END 6 */
 }
