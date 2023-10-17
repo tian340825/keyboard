@@ -18,13 +18,15 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "dma.h"
+#include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stdio.h"
 
 /* USER CODE END Includes */
 
@@ -35,6 +37,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -56,25 +59,6 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-#include <string.h>
- 
-uint8_t RxBuffer[4];   //接收数据
-
-#include "stdio.h"
-#include "keyboard.h"
-#ifdef __GNUC__
-#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif
-PUTCHAR_PROTOTYPE
-{
-    HAL_UART_Transmit(&huart1 , (uint8_t *)&ch, 1, 0xFFFF);
-    return ch;
-}
-uint8_t txbuffer[8]= {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};//�?
-uint8_t sendbuffer[8]={0x00,0x00,0x2c,0x00,0x00,0x00,0x00,0x00};//空格
 
 /* USER CODE END 0 */
 
@@ -106,14 +90,12 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USB_DEVICE_Init();
-  MX_DMA_Init();
+  MX_SPI1_Init();
+  MX_SPI4_Init();
+  MX_TIM3_Init();
   MX_USART1_UART_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-  HAL_UART_Receive_DMA(&huart1, RxBuffer, sizeof(RxBuffer));
-  KeyStatus lastStatus = KEY_RELEASE;
-  KeyStatus curStatus = KEY_RELEASE;
-  printf("Hello L\n");
 
   /* USER CODE END 2 */
 
@@ -124,25 +106,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    //HAL_UART_Transmit_DMA(&huart1 , "Hello L\r\n", strlen("Hello L\r\n"));
-
-    // HAL_Delay(1000);
-    if((curStatus = Key_Scan(GPIOB ,GPIO_PIN_1) ) != lastStatus)
-    {
-      lastStatus = curStatus;
-      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0,lastStatus);
-      printf("key %s\n",lastStatus == KEY_RELEASE?"release":"pressed");
-      if(!lastStatus)//PTT按下,按下为低
-      {
-         USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS,sendbuffer,8);//发送按下报文
-      }
-      else
-      {
-         USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS,txbuffer,8);//松开报文
-      }
-    }
-
-    HAL_Delay(500);
+		printf("TL NB");
+		HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }
@@ -155,18 +120,23 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+
+  /** Configure the main internal regulator output voltage
+  */
+  __HAL_RCC_PWR_CLK_ENABLE();
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL6;
+  RCC_OscInitStruct.PLL.PLLM = 12;
+  RCC_OscInitStruct.PLL.PLLN = 96;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -179,29 +149,15 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB;
-  PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
   {
     Error_Handler();
   }
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-
-	if(huart->Instance == USART1)
-	{
-       HAL_UART_Transmit_DMA(&huart1 , RxBuffer, sizeof(RxBuffer));
-	}
-}
 
 /* USER CODE END 4 */
 
