@@ -35,8 +35,8 @@ typedef enum NormalKeyCode_t
      * @brief  
      */
     RESERVED = 0,ERROR_ROLL_OVER,POST_FAIL,ERROR_UNDEFINED,
-    A,B,C,D,E,F,G,H,I,J,K,L,M,
-    N,O,P,Q,R,S,T,U,V,W,X,Y,Z,
+    A_CODE,B_CODE,C_CODE,D_CODE,E_CODE,F_CODE,G_CODE,H_CODE,I_CODE,J_CODE,K_CODE,L_CODE,M_CODE,
+    N_CODE,O_CODE,P_CODE,Q_CODE,R_CODE,S_CODE,T_CODE,U_CODE,V_CODE,W_CODE,X_CODE,Y_CODE,Z_CODE,
     NUM_1/*1!*/,NUM_2/*2@*/,NUM_3/*3#*/,NUM_4/*4$*/,NUM_5/*5%*/,
     NUM_6/*6^*/,NUM_7/*7&*/,NUM_8/*8**/,NUM_9/*9(*/,NUM_0/*0)*/,
     ENTER,ESC,BACKSPACE,TAB,SPACE,
@@ -65,4 +65,6 @@ typedef enum NormalKeyCode_t
 //     uint8_t
 // }keyReportDada;
 KeyStatus Key_Scan(GPIO_TypeDef* GPIOx,uint16_t GPIO_Pin);
+
+void Key_Test(KeyStatus status);
 #endif 

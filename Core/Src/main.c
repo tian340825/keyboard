@@ -101,12 +101,15 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  int i = 0;;
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 		printf("TL NB");
+    if(i < 10)
+      Key_Test(i%2);
 		HAL_Delay(500);
   }
   /* USER CODE END 3 */
