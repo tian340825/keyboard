@@ -11,7 +11,6 @@
 #ifndef __KEYBOARD_H__
 #define __KEYBOARD_H__
 #include "main.h"
-#include "dma.h"
 #include "usart.h"
 #include "usb_device.h"
 #include "gpio.h"
