@@ -27,6 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
+#include "keyboard.h"
 
 /* USER CODE END Includes */
 
@@ -42,13 +43,17 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+uint8_t key_data[20];
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+void Start_Keyvalue_Sync(void)
+{
+  HAL_GPIO_WritePin(SCAN_PL_GPIO_Port, SCAN_PL_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SCAN_PL_GPIO_Port, SCAN_PL_Pin, GPIO_PIN_SET);
+}
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -108,9 +113,15 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 		printf("TL NB");
+    Start_Keyvalue_Sync();
+    HAL_GPIO_WritePin(SCAN_CE_GPIO_Port, SCAN_CE_Pin, GPIO_PIN_RESET);
+		HAL_Delay(1);
+    HAL_SPI_Receive(&hspi1, key_data, 3, 0x2f);
+    HAL_GPIO_WritePin(SCAN_CE_GPIO_Port, SCAN_CE_Pin, GPIO_PIN_SET);
+    printf("key data : %02X %02X %02X\r\n", key_data[0], key_data[1], key_data[2]);
     if(i < 10)
       Key_Test(i%2);
-		HAL_Delay(500);
+		HAL_Delay(10);
   }
   /* USER CODE END 3 */
 }
