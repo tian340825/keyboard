@@ -112,16 +112,19 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		printf("TL NB");
+	printf("TL NB");
     Start_Keyvalue_Sync();
     HAL_GPIO_WritePin(SCAN_CE_GPIO_Port, SCAN_CE_Pin, GPIO_PIN_RESET);
-		HAL_Delay(1);
+	HAL_Delay(1);
     HAL_SPI_Receive(&hspi1, key_data, 3, 0x2f);
     HAL_GPIO_WritePin(SCAN_CE_GPIO_Port, SCAN_CE_Pin, GPIO_PIN_SET);
     printf("key data : %02X %02X %02X\r\n", key_data[0], key_data[1], key_data[2]);
-    if(i < 10)
+    if(i <= 100)
+	{
       Key_Test(i%2);
-		HAL_Delay(10);
+	}
+	i++;
+	HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }

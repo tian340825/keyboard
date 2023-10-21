@@ -59,11 +59,12 @@ typedef enum NormalKeyCode_t
 
 
     
-// typedef struct keyReportDada
-// {
-//     uint8_t  specialKeyCode;
-//     uint8_t
-// }keyReportDada;
+typedef struct keyReportDada
+{
+    uint8_t  specialKey;
+    uint8_t  reserve;
+    uint8_t  NormalKey[17];
+}keyReportDada;
 KeyStatus Key_Scan(GPIO_TypeDef* GPIOx,uint16_t GPIO_Pin);
 
 void Key_Test(KeyStatus status);
