@@ -106,7 +106,18 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int i = 0;;
+  keyBoard_t *keyBoard = malloc(sizeof(keyBoard_t));
+  if(keyBoard != NULL)
+  {
+    memset(keyBoard,0,sizeof(keyBoard_t));
+    keyInit(keyBoard);
+	  printf("keyInit suc\r\n");
+    keyBoard->printKeyRawData(keyBoard);
+  }
+  else
+  {
+	  printf("clreate fail\r\n");
+  }
   while (1)
   {
     /* USER CODE END WHILE */
@@ -119,11 +130,10 @@ int main(void)
     HAL_SPI_Receive(&hspi1, key_data, 3, 0x2f);
     HAL_GPIO_WritePin(SCAN_CE_GPIO_Port, SCAN_CE_Pin, GPIO_PIN_SET);
     printf("key data : %02X %02X %02X\r\n", key_data[0], key_data[1], key_data[2]);
-    if(i <= 100)
-	{
-      Key_Test(i%2);
-	}
-	i++;
+    if(keyBoard->test)
+    {
+      keyBoard->test(keyBoard);
+    }
 	HAL_Delay(1000);
   }
   /* USER CODE END 3 */
